@@ -1,1 +1,2 @@
-# ProductSoreMern
+MONGO_URI=
+cors
