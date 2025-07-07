@@ -7,7 +7,7 @@ import { Box, VStack, Button, Container, Flex, Image, useColorModeValue, Spinner
 import UpdateProduct from '../components/UpdateProduct';
 import { useToast } from '@chakra-ui/react';
 
-const HomePage = () => {
+const ProductsPage = () => {
   const { data, isLoading, error } = useSelector(state => state.product);
   const dispatch = useDispatch();
   const [productId, setProductId] = useState(null);
@@ -108,4 +108,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default ProductsPage;

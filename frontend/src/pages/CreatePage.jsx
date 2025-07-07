@@ -50,7 +50,7 @@ const CreatePage = () => {
       });
     }
     setIsAdding(false);
-    navigate("/");
+    navigate("/products");
   };
 
   return (
