@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.14.0",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.10.0",
+    "firebase": "^11.10.0",
     "framer-motion": "^12.12.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

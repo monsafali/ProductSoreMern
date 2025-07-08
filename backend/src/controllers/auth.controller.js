@@ -2,6 +2,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
@@ -11,7 +12,9 @@ export const signup = async (req, res) => {
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
     }
 
     const user = await User.findOne({ email });
@@ -25,6 +28,7 @@ export const signup = async (req, res) => {
       fullName,
       email,
       password: hashedPassword,
+      provider: "local",
     });
 
     if (newUser) {
@@ -75,6 +79,38 @@ export const login = async (req, res) => {
   }
 };
 
+export const loginWithgoogle = async (req, res) => {
+  try {
+    const { fullName, email, avatar } = req.body;
+
+    let user;
+    user = await User.findOne({ email });
+    if (!user) {
+      const newUser = new User({
+        fullName,
+        email,
+        profilePic: avatar,
+      });
+
+      await newUser.save();
+      user = newUser;
+    }
+    user = user.toObject({ getters: true });
+    const token = jwt.sign(user, process.env.JWT_SECRET);
+    res.cookie("jwt", token, {
+      httpOnly: true,
+    });
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error,
+    });
+  }
+};
 export const logout = (req, res) => {
   try {
     res.cookie("jwt", "", { maxAge: 0 });
