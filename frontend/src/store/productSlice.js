@@ -43,8 +43,15 @@ const productSlice = createSlice({
         state.data = action.payload.data;
       })
       //edit
-      .addCase(editProduct.fulfilled, (state) => {
+       .addCase(editProduct.fulfilled, (state, action) => {
         state.isLoading = false;
+
+        const updatedProduct = action.payload.data;
+        const index = state.data.findIndex((p) => p._id === updatedProduct._id);
+
+        if (index !== -1) {
+          state.data[index] = updatedProduct;
+        }
 
       })
       //delete
