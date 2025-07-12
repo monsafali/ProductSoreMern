@@ -1,13 +1,13 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import CreatePage from "./pages/CreatePage";
-import ProductsPage from './pages/ProductsPage';
-import NotFound from './pages/NotFound';
-import Navbar from './components/Navbar';
-import Login from './pages/Login';
+import ProductsPage from "./pages/ProductsPage";
+import NotFound from "./pages/NotFound";
+import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
 import { Box, useColorModeValue } from "@chakra-ui/react";
-import { useSelector } from 'react-redux';
-import Signup from './pages/Signup';
+import { useSelector } from "react-redux";
+import Signup from "./pages/Signup";
 import "./App.css";
 
 const App = () => {
@@ -15,6 +15,7 @@ const App = () => {
 
   return (
     <>
+      {/* This is just a navbar */}
       <Navbar />
       <Box minH="100vh" bg={useColorModeValue("gray.300", "gray.900")}>
         <Routes>
