@@ -8,10 +8,20 @@ import Login from "./pages/Login";
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import Signup from "./pages/Signup";
+import { getMe } from "./store/authSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import "./App.css";
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getMe()); 
+  }, [dispatch]);
+
 
   return (
     <>

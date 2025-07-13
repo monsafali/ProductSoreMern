@@ -1,11 +1,15 @@
+
 import {
   createSlice,
   createAsyncThunk,
   isPending,
   isRejected,
 } from "@reduxjs/toolkit";
-import axios from "axios";
+//my custom axios
+import axios from "../axios"; 
 
+
+// signup
 export const signup = createAsyncThunk(
   "auth/signup",
   async (userData, { rejectWithValue }) => {
@@ -18,17 +22,21 @@ export const signup = createAsyncThunk(
   }
 );
 
+// login
 export const login = createAsyncThunk(
   "auth/login",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/login", userData);
-      return response.data;
+      const userRes = await axios.get("/api/auth/check");
+      return userRes.data;
     } catch (err) {
-      return rejectWithValue(err.response.data.message);
+      return rejectWithValue(err.response?.data?.message || "Login failed");
     }
   }
 );
+
+// logout
 export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
     const response = await axios.post("/api/auth/logout");
@@ -37,6 +45,18 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
     return thunkAPI.rejectWithValue(error.response.data.message);
   }
 });
+
+// getMe for (user persist)
+export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue }) => {
+  try {
+    const res = await axios.get("/api/auth/check");
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.message || "Auth check failed");
+  }
+});
+
+
 
 const initialState = {
   user: null,
@@ -79,7 +99,17 @@ const authSlice = createSlice({
       .addCase(signup.rejected, (state, action) => {
         state.isLoading = false;
         state.signupError = action.payload;
-      });
+      })
+      // getMe for user parisist
+      .addCase(getMe.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(getMe.rejected, (state) => {
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+
   },
 });
 
