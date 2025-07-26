@@ -34,24 +34,24 @@ const Login = () => {
   } = useForm();
 
   //  Redirect after login success
-  useEffect(() => {
-    if (isAuthenticated) {
-      toast({
-        title: "Login Successful",
-        description: "Welcome back!",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     toast({
+  //       title: "Login Successful",
+  //       description: "Welcome back!",
+  //       status: "success",
+  //       duration: 3000,
+  //       isClosable: true,
+  //       position: "top",
+  //     });
 
-      const timer = setTimeout(() => {
-        navigate("/products");
-      }, 500);
+  //     const timer = setTimeout(() => {
+  //       navigate("/products");
+  //     }, 500);
 
-      return () => clearTimeout(timer);
-    }
-  }, [isAuthenticated, navigate, toast]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isAuthenticated, navigate, toast]);
 
   const onSubmit = (data) => {
     dispath(login(data));
