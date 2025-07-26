@@ -1,4 +1,3 @@
-
 import {
   createSlice,
   createAsyncThunk,
@@ -6,8 +5,7 @@ import {
   isRejected,
 } from "@reduxjs/toolkit";
 //my custom axios
-import axios from "../axios"; 
-
+import axios from "../axios";
 
 // signup
 export const signup = createAsyncThunk(
@@ -47,16 +45,19 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
 });
 
 // getMe for (user persist)
-export const getMe = createAsyncThunk("auth/getMe", async (_, { rejectWithValue }) => {
-  try {
-    const res = await axios.get("/api/auth/check");
-    return res.data;
-  } catch (err) {
-    return rejectWithValue(err.response?.data?.message || "Auth check failed");
+export const getMe = createAsyncThunk(
+  "auth/getMe",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axios.get("/api/auth/check");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Auth check failed"
+      );
+    }
   }
-});
-
-
+);
 
 const initialState = {
   user: null,
@@ -69,10 +70,16 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    // ✅ Manual login success (used in Google login)
+    loginSuccess: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+      state.loginError = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      //login
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.loginError = null;
@@ -83,13 +90,11 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.loginError = action.payload || "Login failed";
       })
-      //logout
-      .addCase(logout.fulfilled, (state, action) => {
+      .addCase(logout.fulfilled, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;
       })
-      //signup
       .addCase(signup.fulfilled, (state, action) => {
         state.isLoading = false;
         state.signupError = null;
@@ -100,7 +105,6 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.signupError = action.payload;
       })
-      // getMe for user parisist
       .addCase(getMe.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.user = action.payload;
@@ -108,9 +112,9 @@ const authSlice = createSlice({
       .addCase(getMe.rejected, (state) => {
         state.isAuthenticated = false;
         state.user = null;
-      })
-
+      });
   },
 });
 
+export const { loginSuccess } = authSlice.actions;
 export default authSlice.reducer;
