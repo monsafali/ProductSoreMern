@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
 import {
     Box,
     Button,
@@ -9,16 +10,21 @@ import {
     VStack,
     useColorModeValue,
     Alert,
-    AlertIcon
+    AlertIcon,
+    useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { signup } from '../store/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, Navigate } from "react-router-dom";
 
 const Signup = () => {
     const dispatch = useDispatch()
+      const navigate = useNavigate()
+    const toast = useToast();
     const { isLoading, signupError, isAuthenticated } = useSelector(state => state.auth);
-
+    // This tracks whether the user JUST signed up
+    const [justSignedUp, setJustSignedUp] = useState(false);
     const {
         handleSubmit,
         register,
@@ -27,10 +33,39 @@ const Signup = () => {
     } = useForm();
 
     const onSubmit = (data) => {
-        console.log('Signup Data:', data);
+        // console.log('Signup Data:', data);
         dispatch(signup(data))
+        setJustSignedUp(true); // Mark as just signed up
         reset();
+
     };
+
+    // Show toast and redirect ONLY if the user just signed up
+    useEffect(() => {
+        if (isAuthenticated && justSignedUp) {
+            toast({
+                title: "Signup Successful",
+                description: "Welcome aboard!",
+                status: "success",
+                duration: 1500,
+                isClosable: true,
+                position: "top",
+            });
+
+            const timer = setTimeout(() => {
+                 setJustSignedUp(false);
+                navigate("/products");
+            }, 1500);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isAuthenticated, justSignedUp, toast, navigate]);
+
+    //  If already authenticated and user did NOT just signup, redirect immediately (no toast)
+    if (isAuthenticated && !justSignedUp) {
+        return <Navigate to="/products" replace />;
+    }
+
 
     return (
         <Box

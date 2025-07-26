@@ -29,17 +29,8 @@ const App = () => {
       <Navbar />
       <Box minH="100vh" bg={useColorModeValue("gray.300", "gray.900")}>
         <Routes>
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? <Navigate to="/products" replace /> : <Login />
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              isAuthenticated ? <Navigate to="/products" replace /> : <Signup />
-            }
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup /> }
           />
           <Route
             path="/products"
