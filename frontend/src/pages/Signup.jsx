@@ -20,7 +20,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 
 const Signup = () => {
     const dispatch = useDispatch()
-      const navigate = useNavigate()
+    const navigate = useNavigate()
     const toast = useToast();
     const { isLoading, signupError, isAuthenticated } = useSelector(state => state.auth);
     // This tracks whether the user JUST signed up
@@ -53,7 +53,7 @@ const Signup = () => {
             });
 
             const timer = setTimeout(() => {
-                 setJustSignedUp(false);
+                setJustSignedUp(false);
                 navigate("/products");
             }, 1500);
 

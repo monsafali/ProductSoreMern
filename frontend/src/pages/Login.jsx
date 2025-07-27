@@ -11,17 +11,18 @@ import {
   AlertIcon,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { login } from "../store/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Navigate } from "react-router-dom";
 import LoginWithGoogle from "../utils/LoginWithGoogle";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispath = useDispatch();
   const toast = useToast();
+  const [justLogin, setJustLogin] = useState(false)
   const { isLoading, loginError, isAuthenticated } = useSelector(
     (state) => state.auth
   );
@@ -33,29 +34,36 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-useEffect(() => {
-  if (isAuthenticated) {
-    toast({
-      title: "Login Successful",
-      description: "Welcome back!",
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-      position: "top",
-    });
+   // Show toast and redirect ONLY if the user just signed up
+  useEffect(() => {
+    if (isAuthenticated && justLogin) {
+      toast({
+        title: "Login Successful",
+        description: "Welcome back!",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
 
-    const timer = setTimeout(() => {
-      navigate("/products");
-    }, 1500); // Enough time to show toast
+      const timer = setTimeout(() => {
+        setJustLogin(false)
+        navigate("/products");
+      }, 1500);
 
-    return () => clearTimeout(timer);
-  }
-}, [isAuthenticated]);
-
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated]);
+//submit user info
   const onSubmit = (data) => {
     dispath(login(data));
+    setJustLogin(true)
     reset();
   };
+  //  If already authenticated and user did NOT just login, redirect immediately (no toast)
+  if (isAuthenticated && !justLogin) {
+    return <Navigate to="/products" replace />;
+  }
   return (
     <Box
       minH="100vh"
